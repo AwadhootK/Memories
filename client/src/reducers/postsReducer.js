@@ -3,7 +3,8 @@ import {
   fetchPosts,
   createPost,
   deletePost,
-  incrementLikeCount
+  incrementLikeCount,
+  updatePost
 } from '../api/postsCRUD'
 
 const initialState = {
@@ -61,6 +62,23 @@ const postSlice = createSlice({
       state.isLoading = false
     })
     builder.addCase(incrementLikeCount.rejected, (state, action) => {
+      state.isLoading = false
+      state.error = action.error
+    })
+    builder.addCase(updatePost.pending, (state, action) => {
+      state.isLoading = true
+    })
+    builder.addCase(updatePost.fulfilled, (state, action) => {
+      const { id, newPost } = action.payload
+      console.log('id: ' + id)
+      console.log('updated post: ' + JSON.stringify(newPost))
+      state.posts = state.posts.map(post =>
+        post._id === id ? { ...post, ...newPost } : post
+      )
+
+      state.isLoading = false
+    })
+    builder.addCase(updatePost.rejected, (state, action) => {
       state.isLoading = false
       state.error = action.error
     })

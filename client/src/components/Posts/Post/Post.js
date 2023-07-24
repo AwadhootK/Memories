@@ -1,6 +1,6 @@
 import React from 'react'
 import useStyles from './styles.js'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   Card,
   CardActions,
@@ -16,13 +16,16 @@ import DeleteIcon from '@material-ui/icons/Delete.js'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz.js'
 import {
   deletePost,
+  // eslint-disable-next-line
   fetchPosts,
   incrementLikeCount
 } from '../../../api/postsCRUD.js'
+import { setCurrentId } from '../../../reducers/currentIDReducer.js'
 
 const Post = ({ post }) => {
   const classes = useStyles()
   const dispatch = useDispatch()
+
   return (
     <Card className={classes.card}>
       <CardMedia
@@ -31,19 +34,27 @@ const Post = ({ post }) => {
         title={post.title}
       />
       <div className={classes.overlay}>
-        <Typography variant='h6'>{post.creator}</Typography>
+        <Typography variant='h4'>{post.title}</Typography>
+        <Typography variant='h10'>{post.creator}</Typography>
         <Typography variant='body2'>
           {moment(post.createdAt).fromNow()}
         </Typography>
       </div>
       <div className={classes.overlay2}>
-        <Button style={{ color: 'white' }} size='small' onClick={() => {}}>
+        <Button
+          style={{ color: 'white' }}
+          size='small'
+          onClick={() => {
+            // edit post info
+            dispatch(setCurrentId({ id: post._id, title: post.title }))
+          }}
+        >
           <MoreHorizIcon fontSize='default' />
         </Button>
       </div>
       <div className={classes.details}>
         <Typography variant='body2' color='textSecondary'>
-          {post.tags.map(tag => `#${tag}`)}
+          {post.tags.map(tag => `#${tag} `)}
         </Typography>
       </div>
       <CardContent>

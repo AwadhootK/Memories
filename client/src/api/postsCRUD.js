@@ -21,7 +21,18 @@ export const incrementLikeCount = createAsyncThunk(
   async ({ id, likes }) => {
     console.log('id: ' + id)
     console.log('likes: ' + likes)
-    const response = await axios.patch(`${url}/${id}/?likes=${parseInt(likes)}`)
+    const response = await axios.patch(
+      `${url}/likes/${id}/?likes=${parseInt(likes)}`
+    )
+    return response.data
+  }
+)
+export const updatePost = createAsyncThunk(
+  'updatePost',
+  async ({ id, newPost }) => {
+    console.log(`id: ${id}`)
+    console.log(`body: ${newPost}`)
+    const response = await axios.patch(`${url}/${id}`, newPost)
     return response.data
   }
 )

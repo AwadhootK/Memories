@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import useStyles from './styles.js'
 import { TextField, Button, Typography, Paper } from '@material-ui/core'
 import FileBase from 'react-file-base64'
-import { useDispatch } from 'react-redux'
-import { createPost, fetchPosts } from '../../api/postsCRUD.js'
+import { useDispatch, useSelector } from 'react-redux'
+import { createPost, fetchPosts, updatePost } from '../../api/postsCRUD.js'
 
 const Form = () => {
   const initialData = {
@@ -13,14 +13,29 @@ const Form = () => {
     tags: '',
     selectedFile: ''
   }
-  const [postData, setPostData] = useState(initialData)
+
   const classes = useStyles()
 
   const dispatch = useDispatch()
+  const currentId = useSelector(state => state.id.id)
+  const currentTitle = useSelector(state => state.id.title)
+  const [postData, setPostData] = useState(initialData)
 
   const handleOnSubmit = e => {
     e.preventDefault()
-    dispatch(createPost(postData)) // dispatch action to create post
+    if (currentId == null) {
+      // dispatch for creating a new post
+      dispatch(createPost(postData))
+    } else {
+      // dispatch for editing existing post
+      let tempData = {}
+      for (const key in postData) {
+        if (postData[key] !== '') tempData[key] = postData[key]
+      }
+      console.log('newpost data: ' + tempData)
+      dispatch(updatePost({ id: currentId, newPost: tempData }))
+      clear()
+    }
     clear()
   }
   const clear = () => {
@@ -35,7 +50,11 @@ const Form = () => {
         className={`${classes.form} ${classes.root}`}
         onSubmit={handleOnSubmit}
       >
-        <Typography variant='h6'>Creating a memory</Typography>
+        <Typography variant='h6'>
+          {currentId == null
+            ? 'Creating a memory'
+            : `Editing Post: ${currentTitle}`}
+        </Typography>
         <TextField
           name='creator'
           variant='outlined'
@@ -66,15 +85,19 @@ const Form = () => {
           label='Tags'
           fullWidth
           value={postData.tags}
-          onChange={e => setPostData({ ...postData, tags: e.target.value })}
+          onChange={e =>
+            setPostData({ ...postData, tags: e.target.value.split(',') })
+          }
         />
         <div className={classes.fileInput}>
           <FileBase
             type='file'
-            multiple='false'
-            onDone={base64String =>
+            multiple={false}
+            onDone={base64String => {
+              console.log('before: '+postData['selectedFile'])
+              console.log('after: '+base64String)
               setPostData({ ...postData, selectedFile: base64String })
-            }
+            }}
           ></FileBase>
         </div>
         <Button

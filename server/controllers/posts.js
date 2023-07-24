@@ -44,6 +44,18 @@ export const incrementLikeCount = async (req, res) => {
     res.status(201).json({ id: id, likes: parseInt(likes) + 1 })
   } catch (error) {
     console.log(error)
-    res.status(409).json({ message: error.message, likes : likes })
+    res.status(409).json({ message: error.message, likes: likes })
+  }
+}
+
+export const updatePost = async (req, res) => {
+  const body = req.body
+  const id = req.params.id
+  try {
+    const response = await PostMessage.findOneAndUpdate({ _id: id }, body)
+    console.log('post updated!')
+    res.status(201).json({ id: id, newPost: body })
+  } catch (error) {
+    res.status(409).json({ message: error.message, id: id })
   }
 }
