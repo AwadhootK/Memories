@@ -4,6 +4,7 @@ import { TextField, Button, Typography, Paper } from '@material-ui/core'
 import FileBase from 'react-file-base64'
 import { useDispatch, useSelector } from 'react-redux'
 import { createPost, fetchPosts, updatePost } from '../../api/postsCRUD.js'
+import { setCurrentId } from '../../reducers/currentIDReducer.js'
 
 const Form = () => {
   const initialData = {
@@ -39,6 +40,7 @@ const Form = () => {
     clear()
   }
   const clear = () => {
+    if (currentId != null) dispatch(setCurrentId({ id: null, title: '' }))
     setPostData(initialData)
   }
 
@@ -94,9 +96,7 @@ const Form = () => {
             type='file'
             multiple={false}
             onDone={base64String => {
-              console.log('before: '+postData['selectedFile'])
-              console.log('after: '+base64String)
-              setPostData({ ...postData, selectedFile: base64String })
+              setPostData({ ...postData, selectedFile: base64String.base64 })
             }}
           ></FileBase>
         </div>
@@ -118,7 +118,7 @@ const Form = () => {
           onClick={clear}
           fullWidth
         >
-          Clear
+          Clear {(currentId == null) ? '' : ' Selection'} 
         </Button>
       </form>
     </Paper>

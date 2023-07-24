@@ -11,8 +11,7 @@ export const getPosts = async (req, res) => {
 
 export const createPost = async (req, res) => {
   const post = req.body
-  const selectedFile = post.selectedFile[0].base64
-  const newPost = new PostMessage({ ...post, selectedFile: selectedFile })
+  const newPost = new PostMessage({ ...post })
   try {
     await newPost.save()
     console.log('added to db!')
