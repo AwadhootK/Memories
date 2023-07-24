@@ -1,15 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import { legacy_createStore, applyMiddleware, compose } from 'redux'
-import thunk from 'redux-thunk'
 
-import reducers from './reducers'
+import postReducers from './reducers/postsReducer.js'
 import App from './App.js'
-import { red } from '@material-ui/core/colors'
 import './index.css'
+import { configureStore } from '@reduxjs/toolkit'
 
-const store = legacy_createStore(reducers, compose(applyMiddleware(thunk)))
+const store = configureStore({
+  reducer: {
+    posts: postReducers
+  }
+})
 
 ReactDOM.render(
   <Provider store={store}>

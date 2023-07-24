@@ -1,18 +1,18 @@
 import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { Container, AppBar, Typography, Grow, Grid } from '@material-ui/core'
-import { getPosts } from './actions/posts.js'
 import memories from './images/memories.png'
 import Posts from './components/Posts/Posts'
 import Form from './components/Form/Form'
 import useStyles from './styles.js'
+import { fetchPosts } from './api/postsCRUD'
 
 const App = () => {
   const classes = useStyles() // for adding styling
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(getPosts())
+    dispatch(fetchPosts())
   }, [dispatch])
 
   return (
